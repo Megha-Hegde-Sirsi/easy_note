@@ -1,6 +1,6 @@
-let Note = require('../models/note.model.js');
+let Todo = require('../models/todo.model.js');
 
-//create and save a new note
+//create and save a new todo
 //Req obj {title:string, content: string}
 exports.create = (req, res) => {
     var resArr = new Array();
@@ -11,12 +11,12 @@ exports.create = (req, res) => {
             if (!req.body[i].title || !req.body[i].content) {
                 res.status(400).send({ message: "Note cannot be empty" })
             } else {
-                //create a note in db
-                var note = {
+                //create a todo in db
+                var todo = {
                     title: req.body[i].title,
                     content: req.body[i].content
                 }
-                new Note(note).save().then(data => {
+                new Todo(todo).save().then(data => {
                     resArr.push(data)
                     resolve();
                     // res.send(data)
@@ -33,9 +33,9 @@ exports.create = (req, res) => {
     })
 };
 
-//retrieve and return all notes from db
+//retrieve and return all todo from db
 exports.findAll = (req, res) => {
-    Note.find().then((data) => {
+    Todo.find().then((data) => {
         if (!data) {
             res.status(404).send({ message: "No data found" })
         } else {
@@ -46,15 +46,15 @@ exports.findAll = (req, res) => {
     })
 };
 
-//retrieve a single note with note Id
+//retrieve a single todo with todo Id
 //pass _id in URL
 exports.findOne = (req, res) => {
-    if (!req.params.noteId) {
+    if (!req.params.todoId) {
         res.status(400).send({ message: "Please provide the ID of the note you want to search" })
     } else {
-        Note.findOne({ _id: req.params.noteId }).then((data) => {
+        Todo.findOne({ _id: req.params.todoId }).then((data) => {
             if (!data) {
-                res.status(404).send({ message: "No notes found for the given ID" })
+                res.status(404).send({ message: "No todo found for the given ID" })
             } else {
                 res.send(data)
             }
@@ -65,17 +65,18 @@ exports.findOne = (req, res) => {
 }
 
 
-//update a note with note ID
+//update a todo with todo ID
 //pass _id in URL
 //req obj 
 exports.update = (req, res) => {
-    if (!req.body.content || !req.params.noteId) {
+    if (!req.body.content || !req.params.todoId) {
         res.status(400).send({ message: "Please give ID and Content" })
     } else {
-        Note.findOneAndUpdate({ _id: req.params.noteId }, { title: req.body.title, content: req.body.content }, { new: true }).then((data) => {
+        Todo.findOneAndUpdate({ _id: req.params.todoId }, { title: req.body.title, content: req.body.content, done: req.body.done }, { new: true }).then((data) => {
             if (!data) {
-                res.status(404).send({ message: "Note not found with given ID" })
+                res.status(404).send({ message: "todo not found with given ID" })
             } else {
+                console.log(data)
                 res.send(data)
             }
         }).catch((err) => {
@@ -84,15 +85,15 @@ exports.update = (req, res) => {
     }
 };
 
-//delete a note with note Id
+//delete a todo with todo Id
 //pass _id in URL
 exports.delete = (req, res) => {
-    if (!req.params.noteId) {
-        res.status(400).send({ message: "Please give the ID of the note to delete the note" })
+    if (!req.params.todoId) {
+        res.status(400).send({ message: "Please give the ID of the todo to delete the todo" })
     } else {
-        Note.findOneAndRemove({ _id: req.params.noteId }).then((data) => {
+        Todo.findOneAndRemove({ _id: req.params.todoId }).then((data) => {
             if (!data) {
-                res.status(404).send({ message: "Note with given ID is not found" })
+                res.status(404).send({ message: "todo with given ID is not found" })
             } else {
                 res.send(data)
             }

@@ -27,10 +27,10 @@ mongoose.connect(dbConfig.url)
 
 //simple route
 app.get('/', (req, res) => {
-    res.json({ "message": "Welcome to easy notes application. Now keep track of your work by keeping notes with this app" })
+    res.json({ "message": "Welcome to easy todo application. Now keep track of your work by keeping todo with this app" })
 });
 
-require('./app/routes/note.routes.js')(app)
+require('./app/routes/todo.routes.js')(app)
 
 app.listen(3000, () => {
     console.log("Easy notes application server is up at 3000. Thank you")
